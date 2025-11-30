@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "HitInterface.h"
 #include "Enemy.generated.h"
 
 UCLASS()
-class PALADINTUTORIAL_API AEnemy : public ACharacter
+class PALADINTUTORIAL_API AEnemy : public ACharacter, public IHitInterface
 {
 	GENERATED_BODY()
 
@@ -17,6 +18,15 @@ public:
 	
 	// Called every frame
     virtual void Tick(float DeltaTime) override;
+
+	// Override hit interface
+	virtual void HitInterface_Implementation(FHitResult HitResult) override;
+	
+	virtual float TakeDamage(float DamageAmount,
+		FDamageEvent const& DamageEvent,
+		AController* EventInstigator,
+		AActor* DamageCauser
+		) override;
 
 protected:
 	// Called when the game starts or when spawned

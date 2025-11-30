@@ -7,12 +7,15 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "PaladinAnimInstance.h"
+#include "HitInterface.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 APaladinCharacter::APaladinCharacter() :
 	WalkSpeed(300.0f),
-	RunSpeed(600.0f)
+	RunSpeed(600.0f),
+	BaseDamage(20.0f)
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -166,7 +169,21 @@ void APaladinCharacter::OnRightWeaponOverlap(UPrimitiveComponent* OverlappedComp
 {
 	if (IsValid(SweepResult.GetActor()) && SweepResult.GetActor() != this)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Cyan, TEXT("Apply Damage"));
+		IHitInterface* HitInterface = Cast<IHitInterface>(SweepResult.GetActor());
+
+		if (HitInterface)
+		{
+			HitInterface->HitInterface_Implementation(SweepResult);
+		}
+		
+		// Apply damage to enemy
+		UGameplayStatics::ApplyDamage(
+		SweepResult.GetActor(),
+		BaseDamage,
+		GetController(),
+		this,
+		UDamageType::StaticClass()
+		);
 	}
 }
 
