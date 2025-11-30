@@ -31,6 +31,10 @@ APaladinCharacter::APaladinCharacter() :
 	// Jump settings
 	GetCharacterMovement()->JumpZVelocity = 400.0f;
 	GetCharacterMovement()->AirControl = 0.1f;
+
+	// Right weapon collision box
+	RightWeaponCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Right Weapon Box"));
+	RightWeaponCollision->SetupAttachment(GetMesh(), FName("SwordSocket"));
 }
 
 // Called when the game starts or when spawned
@@ -48,6 +52,15 @@ void APaladinCharacter::BeginPlay()
 			Subsystem->AddMappingContext(InputMappingContext, 0);
 		}
 	}
+
+	// Bind function to overlap for weapon box
+	RightWeaponCollision->OnComponentBeginOverlap.AddDynamic(this, &APaladinCharacter::OnRightWeaponOverlap);
+
+	// Setup right weapon collision
+	RightWeaponCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	RightWeaponCollision->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
+	RightWeaponCollision->SetCollisionResponseToAllChannels(ECR_Ignore);
+	RightWeaponCollision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECR_Overlap);
 	
 }
 
@@ -148,6 +161,15 @@ void APaladinCharacter::AnimMontagePlay(UAnimMontage* MontageToPlay, FName Secti
 	}
 }
 
+void APaladinCharacter::OnRightWeaponOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (IsValid(SweepResult.GetActor()) && SweepResult.GetActor() != this)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Cyan, TEXT("Apply Damage"));
+	}
+}
+
 // Called every frame
 void APaladinCharacter::Tick(float DeltaTime)
 {
@@ -175,5 +197,15 @@ void APaladinCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 		Input->BindAction(SpinAttackAction, ETriggerEvent::Completed, this, &APaladinCharacter::SpinAttack);
 		Input->BindAction(JumpAttackAction, ETriggerEvent::Completed, this, &APaladinCharacter::JumpAttack);
 	}
+}
+
+void APaladinCharacter::ActivateRightWeapon()
+{
+	RightWeaponCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+}
+
+void APaladinCharacter::DeactivateRightWeapon()
+{
+	RightWeaponCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 

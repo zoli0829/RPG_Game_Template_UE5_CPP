@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "Components/BoxComponent.h"
 #include "PaladinCharacter.generated.h"
 
 // Declarations
@@ -28,6 +29,9 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	
+	virtual void ActivateRightWeapon();
+	virtual void DeactivateRightWeapon();
 
 protected:
 	// Called when the game starts or when spawned
@@ -84,6 +88,16 @@ protected:
 
 	void AnimMontagePlay(UAnimMontage* MontageToPlay, FName SectionName = "Default", float PlayRate = 1.0f);
 
+	// Right weapon overlap
+	UFUNCTION()
+	void OnRightWeaponOverlap(
+		UPrimitiveComponent* OverlappedComponent,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComponent,
+		int32 OtherBodyIndex,
+		bool bFromSweep,
+		const FHitResult& SweepResult);
+
 private:
 	// Spring arm component
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category ="Camera", meta=(AllowPrivateAccess="true"))
@@ -96,4 +110,8 @@ private:
 	// Montages
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Montages", meta=(AllowPrivateAccess="true"))
 	UAnimMontage* AttackMontage;
+
+	// Collisions
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess="true"))
+	UBoxComponent* RightWeaponCollision;
 };
