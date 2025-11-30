@@ -41,6 +41,7 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 	{
 		Health = 0.0f;
 		// call blueprint function to play death montage and clean things up
+		// Todo: create a flag to either play a montage or ragdoll
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Enemy died!"));
 	}
 	else
