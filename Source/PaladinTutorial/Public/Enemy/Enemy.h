@@ -3,12 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "EnemyAIController.h"
 #include "GameFramework/Character.h"
 #include "HitInterface.h"
 #include "Components/BoxComponent.h"
 #include "Enemy.generated.h"
 
 class UAnimMontage;
+class AEnemyAIController;
 
 UCLASS()
 class PALADINTUTORIAL_API AEnemy : public ACharacter, public IHitInterface
@@ -38,6 +40,10 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	// Enemy AI Controller
+	UPROPERTY()
+	AEnemyAIController* EnemyAIController;
 
 	// Right weapon overlap
 	UFUNCTION()

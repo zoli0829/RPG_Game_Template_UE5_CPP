@@ -15,7 +15,9 @@
 APaladinCharacter::APaladinCharacter() :
 	WalkSpeed(300.0f),
 	RunSpeed(600.0f),
-	BaseDamage(20.0f)
+	BaseDamage(20.0f),
+	Health(100.0f),
+	MaxHealth(100.0f)
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -224,5 +226,23 @@ void APaladinCharacter::ActivateRightWeapon()
 void APaladinCharacter::DeactivateRightWeapon()
 {
 	RightWeaponCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+float APaladinCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
+	class AController* EventInstigator, AActor* DamageCauser)
+{
+	if (Health - DamageAmount <= 0)
+	{
+		Health = 0.0f;
+		// Play death montage
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Player died!"));
+	}
+	else
+	{
+		Health -= DamageAmount;
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("Player took damage!"));
+	}
+	
+	return DamageAmount;
 }
 

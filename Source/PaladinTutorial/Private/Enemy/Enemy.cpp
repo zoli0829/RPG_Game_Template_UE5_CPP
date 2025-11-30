@@ -3,6 +3,8 @@
 
 #include "Enemy/Enemy.h"
 #include "PaladinCharacter.h"
+#include "Enemy/EnemyAIController.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AEnemy::AEnemy() :
@@ -30,6 +32,9 @@ void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// Setup enemy controller
+	EnemyAIController = Cast<AEnemyAIController>(GetController());
+
 	// Bind function to overlap for weapon box
 	RightWeaponCollision->OnComponentBeginOverlap.AddDynamic(this, &AEnemy::OnRightWeaponOverlap);
 
@@ -51,6 +56,13 @@ void AEnemy::OnRightWeaponOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 	if (Character)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Cyan, TEXT("Hit Player"));
+		UGameplayStatics::ApplyDamage(
+			Character,
+			BaseDamage,
+			EnemyAIController,
+			this,
+			UDamageType::StaticClass()
+			);
 	}
 }
 
