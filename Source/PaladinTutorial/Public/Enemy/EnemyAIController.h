@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "Enemy.h"
+#include "Perception/AIPerceptionTypes.h"
+#include "Perception/AISenseConfig_Sight.h"
 #include "EnemyAIController.generated.h"
 
 /**
@@ -16,4 +19,20 @@ class PALADINTUTORIAL_API AEnemyAIController : public AAIController
 
 public:
 	AEnemyAIController();
+
+	virtual void BeginPlay() override;
+
+protected:
+	AEnemy* ControlledEnemy;
+
+	// Declare sight config and class
+	UPROPERTY(VisibleAnywhere, Category="AI")
+	UAISenseConfig_Sight* SightConfig;
+
+private:
+	void SetupControlledPawn();
+	void SetupPerceptionSystem();
+
+	UFUNCTION()
+	void OnTargetDetected(AActor* Actor, FAIStimulus const Stimulus);
 };

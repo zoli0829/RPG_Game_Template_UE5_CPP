@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EnemyAIController.h"
 #include "GameFramework/Character.h"
 #include "HitInterface.h"
 #include "Components/BoxComponent.h"
