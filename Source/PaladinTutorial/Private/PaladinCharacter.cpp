@@ -152,6 +152,33 @@ void APaladinCharacter::JumpAttack()
 	AnimMontagePlay(AttackMontage, FName("Attack4"), 1.25f);
 }
 
+void APaladinCharacter::StartBlocking()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, TEXT("Start Blocking"));
+	
+	UPaladinAnimInstance* AnimInstance = Cast<UPaladinAnimInstance>(GetMesh()->GetAnimInstance());
+	if (AnimInstance)
+	{
+		// If you want to stop the player from moving when blocking uncomment the DisableMovement() and the StopBlocking() from below below
+		//GetCharacterMovement()->DisableMovement();
+		
+		AnimInstance->SetIsBlocking(true);
+	}
+}
+
+void APaladinCharacter::StopBlocking()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("Stop Blocking"));
+
+	UPaladinAnimInstance* AnimInstance = Cast<UPaladinAnimInstance>(GetMesh()->GetAnimInstance());
+	if (AnimInstance)
+	{
+		//GetCharacterMovement()->SetMovementMode(MOVE_Walking); // uncomment if you want to stop the player from moving
+		
+		AnimInstance->SetIsBlocking(false);
+	}
+}
+
 void APaladinCharacter::AnimMontagePlay(UAnimMontage* MontageToPlay, FName SectionName, float PlayRate)
 {
 	UPaladinAnimInstance* AnimInstance = Cast<UPaladinAnimInstance>(GetMesh()->GetAnimInstance());
@@ -189,6 +216,23 @@ void APaladinCharacter::OnRightWeaponOverlap(UPrimitiveComponent* OverlappedComp
 	}
 }
 
+bool APaladinCharacter::PlayerFacingActor(AActor* FacingActor)
+{
+	// Getting the dot product 
+	FVector PlayerDirection = GetActorForwardVector();
+	FVector ActorDirection = (FacingActor->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+
+	// if the float is + then the actors are facing each other
+	float DotProduct = FVector::DotProduct(PlayerDirection, ActorDirection);
+	
+	if (DotProduct > 0)
+	{
+		return true;
+	}
+
+	return false;
+}
+
 // Called every frame
 void APaladinCharacter::Tick(float DeltaTime)
 {
@@ -210,7 +254,11 @@ void APaladinCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 		Input->BindAction(RunAction, ETriggerEvent::Triggered, this, &APaladinCharacter::Running);
 		Input->BindAction(RunAction, ETriggerEvent::Completed, this, &APaladinCharacter::StopRunning);
 
-		// Attack Actions
+		// Blocking actions
+		Input->BindAction(BlockAction, ETriggerEvent::Triggered, this, &APaladinCharacter::StartBlocking);
+		Input->BindAction(BlockAction, ETriggerEvent::Completed, this, &APaladinCharacter::StopBlocking);
+
+		// Attack actions
 		Input->BindAction(BasicAttackAction, ETriggerEvent::Completed, this, &APaladinCharacter::BasicAttack);
 		Input->BindAction(HeavyAttackAction, ETriggerEvent::Completed, this, &APaladinCharacter::HeavyAttack); // or Triggered, whichever feels better
 		Input->BindAction(SpinAttackAction, ETriggerEvent::Completed, this, &APaladinCharacter::SpinAttack);
@@ -231,17 +279,44 @@ void APaladinCharacter::DeactivateRightWeapon()
 float APaladinCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
 	class AController* EventInstigator, AActor* DamageCauser)
 {
-	if (Health - DamageAmount <= 0)
+	UPaladinAnimInstance* AnimInstance = Cast<UPaladinAnimInstance>(GetMesh()->GetAnimInstance());
+	// If the player is not blocking
+	if (AnimInstance->GetIsBlocking() == false)
 	{
-		Health = 0.0f;
-		// Play death montage
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Player died!"));
+		if (Health - DamageAmount <= 0)
+		{
+			Health = 0.0f;
+			// Play death animation
+			// TODO: Play HitSFX 
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Player died!"));
+		}
+		else
+		{
+			// TODO: Play hit animation
+			Health -= DamageAmount;
+		}
+		// TODO: Play HitSFX
+		
 	}
+	// Is blocking == true
 	else
 	{
-		Health -= DamageAmount;
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("Player took damage!"));
+		// Check if player is facing the enemy -> Run dot product logic
+		if (PlayerFacingActor(DamageCauser))
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("blocking and facing enemy"));
+			// TODO: Play BlockSFX
+			// TODO: Play block impact animation maybe
+		}
+		else
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("blocking and NOT facing enemy"));
+			Health -= DamageAmount;
+			// TODO: Play HitSFX
+			// TODO: Play hit animation
+		}
 	}
+
 	
 	return DamageAmount;
 }

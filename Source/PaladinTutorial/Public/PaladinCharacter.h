@@ -68,6 +68,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category="EnhancedInput")
 	UInputAction* JumpAttackAction;
 
+	UPROPERTY(EditAnywhere, Category="EnhancedInput")
+	UInputAction* BlockAction;
+
 	// Walk speed
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Movement")
 	float WalkSpeed;
@@ -88,6 +91,10 @@ protected:
 	void HeavyAttack();
 	void SpinAttack();
 	void JumpAttack();
+
+	// Block
+	void StartBlocking();
+	void StopBlocking();
 
 	void AnimMontagePlay(UAnimMontage* MontageToPlay, FName SectionName = "Default", float PlayRate = 1.0f);
 
@@ -128,4 +135,6 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess="true"))
 	float MaxHealth;
+
+	bool PlayerFacingActor(AActor* FacingActor);
 };

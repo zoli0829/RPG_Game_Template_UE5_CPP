@@ -40,4 +40,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess="true"))
 	bool bIsBlocking;
+
+public:
+	// Getters and setters
+	FORCEINLINE bool GetIsBlocking() const { return bIsBlocking; }
+	FORCEINLINE void SetIsBlocking(bool blocking) { bIsBlocking = blocking; }
 };
