@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
 #include "Components/BoxComponent.h"
+#include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "PaladinCharacter.generated.h"
 
 // Declarations
@@ -137,4 +138,8 @@ private:
 	float MaxHealth;
 
 	bool PlayerFacingActor(AActor* FacingActor);
+
+	// AI perception system
+	UAIPerceptionStimuliSourceComponent* StimuliSource;
+	void SetupStimulusSource();
 };

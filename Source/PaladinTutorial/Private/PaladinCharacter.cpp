@@ -10,6 +10,7 @@
 #include "HitInterface.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Perception/AISense_Sight.h"
 
 // Sets default values
 APaladinCharacter::APaladinCharacter() :
@@ -40,6 +41,9 @@ APaladinCharacter::APaladinCharacter() :
 	// Right weapon collision box
 	RightWeaponCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Right Weapon Box"));
 	RightWeaponCollision->SetupAttachment(GetMesh(), FName("SwordSocket"));
+
+	// Stimuli
+	SetupStimulusSource();
 }
 
 // Called when the game starts or when spawned
@@ -231,6 +235,16 @@ bool APaladinCharacter::PlayerFacingActor(AActor* FacingActor)
 	}
 
 	return false;
+}
+
+void APaladinCharacter::SetupStimulusSource()
+{
+	StimuliSource = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("Stimulus Source"));
+	if (StimuliSource)
+	{
+		StimuliSource->RegisterForSense(TSubclassOf<UAISense_Sight>());
+		StimuliSource->RegisterWithPerceptionSystem();
+	}
 }
 
 // Called every frame
