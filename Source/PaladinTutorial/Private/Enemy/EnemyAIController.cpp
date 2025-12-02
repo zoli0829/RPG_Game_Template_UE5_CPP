@@ -65,16 +65,14 @@ void AEnemyAIController::OnTargetDetected(AActor* Actor, FAIStimulus const Stimu
 		{
 			if (ControlledEnemy != nullptr)
 			{
-				//ControlledEnemy->EnterCombat();
-				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Emerald, TEXT("Paladin detected."));
+				ControlledEnemy->EnterCombat();
 			}
 		}
 		else
 		{
 			if (ControlledEnemy != nullptr)
 			{
-				//ControlledEnemy->ExitCombat();
-				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Orange, TEXT("Exit combat."));
+				ControlledEnemy->ExitCombat();
 			}
 		}
 	}

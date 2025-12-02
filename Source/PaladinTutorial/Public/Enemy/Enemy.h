@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "HitInterface.h"
+#include "AIBehaviour/AttackStrategy.h"
+#include "AIBehaviour/PatrolStrategy.h"
 #include "Components/BoxComponent.h"
 #include "Enemy.generated.h"
 
@@ -19,6 +21,10 @@ class PALADINTUTORIAL_API AEnemy : public ACharacter, public IHitInterface
 public:
 	// Sets default values for this character's properties
 	AEnemy();
+
+	// Enter and exit combat
+	void EnterCombat();
+	void ExitCombat();
 
 	// Activate and deactivate weapon boxes
 	virtual void ActivateRightWeapon();
@@ -61,6 +67,11 @@ protected:
 	FName GetAttackSectionName(int32 SectionCount);
 
 private:
+	// Combat strategy logic
+	PatrolStrategy PatrolStrategy;
+	AttackStrategy AttackStrategy;
+	TSharedPtr<ICombatStrategy> CombatStrategy;
+	
 	FTimerHandle TimerAttack;
 
 	// Collisions

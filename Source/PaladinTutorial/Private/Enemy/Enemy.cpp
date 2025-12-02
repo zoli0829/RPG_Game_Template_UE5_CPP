@@ -17,6 +17,23 @@ AEnemy::AEnemy() :
 	RightWeaponCollision->SetupAttachment(GetMesh(), RightWeaponSocketName);
 }
 
+void AEnemy::EnterCombat()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Enter combat."));
+
+	CombatStrategy = MakeShared<class AttackStrategy>();
+	CombatStrategy->Execute(this);
+
+}
+
+void AEnemy::ExitCombat()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Emerald, TEXT("Exit combat."));
+
+	CombatStrategy = MakeShared<class PatrolStrategy>();
+	CombatStrategy->Execute(this);
+}
+
 void AEnemy::ActivateRightWeapon()
 {
 	RightWeaponCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
@@ -102,30 +119,6 @@ void AEnemy::ResetAttack()
 
 FName AEnemy::GetAttackSectionName(int32 SectionCount)
 {
-	// Tutorial code with switch statement
-	// FName SectionName;
-	//
-	// // Get random section in montage
-	// const int32 Section { FMath::RandRange(1, SectionCount) };
-	//
-	// switch (Section)
-	// {
-	// 	case 1:
-	// 		SectionName = FName("Attack1");
-	// 		break;
-	// 	case 2:
-	// 		SectionName = FName("Attack2");
-	// 		break;
-	// 	case 3:
-	// 		SectionName = FName("Attack3");
-	// 		break;
-	// 	case 4:
-	// 		SectionName = FName("Attack4");
-	// 		break;
-	// }
-	//
-	// return SectionName;
-
 	const int32 Section = FMath::RandRange(1, SectionCount);
 	return FName(*FString::Printf(TEXT("Attack%d"), Section));
 }
@@ -133,8 +126,8 @@ FName AEnemy::GetAttackSectionName(int32 SectionCount)
 // Called every frame
 void AEnemy::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
-
+	//CombatStrategy = MakeShared<class PatrolStrategy>();
+	//CombatStrategy->Execute(this);
 }
 
 void AEnemy::HitInterface_Implementation(FHitResult HitResult)
