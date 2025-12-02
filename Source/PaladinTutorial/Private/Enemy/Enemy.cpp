@@ -19,8 +19,6 @@ AEnemy::AEnemy() :
 
 void AEnemy::EnterCombat()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Enter combat."));
-
 	CombatStrategy = MakeShared<class AttackStrategy>();
 	CombatStrategy->Execute(this);
 
@@ -28,8 +26,6 @@ void AEnemy::EnterCombat()
 
 void AEnemy::ExitCombat()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Emerald, TEXT("Exit combat."));
-
 	CombatStrategy = MakeShared<class PatrolStrategy>();
 	CombatStrategy->Execute(this);
 }
@@ -123,11 +119,16 @@ FName AEnemy::GetAttackSectionName(int32 SectionCount)
 	return FName(*FString::Printf(TEXT("Attack%d"), Section));
 }
 
+void AEnemy::EnemyPatrol()
+{
+	
+}
+
 // Called every frame
 void AEnemy::Tick(float DeltaTime)
 {
-	//CombatStrategy = MakeShared<class PatrolStrategy>();
-	//CombatStrategy->Execute(this);
+	CombatStrategy = MakeShared<class PatrolStrategy>();
+	CombatStrategy->Execute(this);
 }
 
 void AEnemy::HitInterface_Implementation(FHitResult HitResult)
