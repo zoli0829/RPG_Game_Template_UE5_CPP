@@ -19,6 +19,7 @@ AEnemy::AEnemy() :
 
 void AEnemy::EnterCombat()
 {
+	bCanPatrol = false;
 	CombatStrategy = MakeShared<class AttackStrategy>();
 	CombatStrategy->Execute(this);
 
@@ -26,8 +27,10 @@ void AEnemy::EnterCombat()
 
 void AEnemy::ExitCombat()
 {
+	bCanPatrol = true;
 	CombatStrategy = MakeShared<class PatrolStrategy>();
 	CombatStrategy->Execute(this);
+	bIsWaiting = false;
 }
 
 void AEnemy::ActivateRightWeapon()
@@ -44,6 +47,9 @@ void AEnemy::DeactivateRightWeapon()
 void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// Can enemy patrol
+	bCanPatrol = true;
 
 	// Setup enemy controller
 	EnemyAIController = Cast<AEnemyAIController>(GetController());
@@ -121,14 +127,23 @@ FName AEnemy::GetAttackSectionName(int32 SectionCount)
 
 void AEnemy::EnemyPatrol()
 {
-	
+	CombatStrategy = MakeShared<class PatrolStrategy>();
+	CombatStrategy->Execute(this);
+	bIsWaiting = false;
 }
 
 // Called every frame
 void AEnemy::Tick(float DeltaTime)
 {
-	CombatStrategy = MakeShared<class PatrolStrategy>();
-	CombatStrategy->Execute(this);
+	if (bCanPatrol)
+	{
+		if (PatrolStrategy.HasReachedDestination(this) && !bIsWaiting)
+		{
+			bIsWaiting = true;
+			float PatrolDelay = FMath::RandRange(1.0f, 5.0f);
+			GetWorldTimerManager().SetTimer(PatrolDelayTimer, this, &AEnemy::EnemyPatrol, PatrolDelay, false);
+		}
+	}
 }
 
 void AEnemy::HitInterface_Implementation(FHitResult HitResult)

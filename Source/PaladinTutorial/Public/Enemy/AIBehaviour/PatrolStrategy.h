@@ -9,4 +9,5 @@ class PatrolStrategy : public ICombatStrategy
 public:
 	PatrolStrategy();
 	virtual void Execute(AEnemy* Enemy) override;
+	bool  HasReachedDestination(AEnemy* Enemy);
 };

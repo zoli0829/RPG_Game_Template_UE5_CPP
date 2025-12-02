@@ -73,7 +73,7 @@ private:
 	TSharedPtr<ICombatStrategy> CombatStrategy;
 
 	// This is used in tick for patrolling
-	bool bisWaiting;
+	bool bIsWaiting;
 	bool bCanPatrol;
 	FTimerHandle PatrolDelayTimer;
 	void EnemyPatrol();
