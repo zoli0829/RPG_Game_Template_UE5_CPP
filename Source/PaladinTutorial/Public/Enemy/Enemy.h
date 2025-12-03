@@ -26,6 +26,8 @@ public:
 	void EnterCombat();
 	void ExitCombat();
 
+	void MeleeAttack();
+
 	// Activate and deactivate weapon boxes
 	virtual void ActivateRightWeapon();
 	virtual void DeactivateRightWeapon();
@@ -42,6 +44,13 @@ public:
 		AActor* DamageCauser
 		) override;
 
+	// AI Values
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AI Values", meta=(AllowPrivateAccess="true"))
+	float DistanceToAttackPlayer;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AI Values", meta=(AllowPrivateAccess="true"))
+	float AcceptanceRadius;
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -61,7 +70,6 @@ protected:
 		const FHitResult& SweepResult);
 
 	UFUNCTION(BlueprintCallable)
-	void MeleeAttack();
 	void ResetAttack();
 
 	FName GetAttackSectionName(int32 SectionCount);
@@ -97,7 +105,7 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess="true"))
 	float MaxHealth;
-
+	
 	// Attack montage
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess="true"))
 	UAnimMontage* AttackMontage;

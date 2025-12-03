@@ -10,7 +10,9 @@
 AEnemy::AEnemy() :
 	BaseDamage(5.0f),
 	Health(100.0f),
-	MaxHealth(100.0f)
+	MaxHealth(100.0f),
+	DistanceToAttackPlayer(300.0f),
+	AcceptanceRadius(150.0f)
 {
 	// Right weapon collision box
 	RightWeaponCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Right Weapon Box"));
