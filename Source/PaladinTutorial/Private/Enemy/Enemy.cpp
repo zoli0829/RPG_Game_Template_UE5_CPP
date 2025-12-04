@@ -29,9 +29,16 @@ void AEnemy::EnterCombat()
 
 void AEnemy::ExitCombat()
 {
-	EnemyAIController->ClearFocus(EAIFocusPriority::Gameplay);
 	bIsWaiting = false;
 	CurrentState = EAIState::Patrol;
+	if (EnemyAIController != nullptr)
+	{
+		EnemyAIController->ClearFocus(EAIFocusPriority::Gameplay);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("EnemyAIController is null in ExitCombat()"));
+	}
 }
 
 void AEnemy::ActivateRightWeapon()
@@ -136,15 +143,31 @@ FName AEnemy::GetAttackSectionName(int32 SectionCount)
 
 void AEnemy::EnemyPatrol()
 {
-	PatrolStrategy = NewObject<UPatrolStrategy>();
-	PatrolStrategy->Execute(this);
+	if (PatrolStrategy.IsValid())
+	{
+		PatrolStrategy->Execute(this);
+	}
+	else
+	{
+		PatrolStrategy = NewObject<UPatrolStrategy>();
+		PatrolStrategy->Execute(this);
+	}
+	
 	bIsWaiting = false;
 }
 
 void AEnemy::EnemyAttack()
 {
-	AttackStrategy = NewObject<UAttackStrategy>();
-	AttackStrategy->Execute(this);
+	if (PatrolStrategy.IsValid())
+	{
+		AttackStrategy->Execute(this);
+	}
+	else
+	{
+		AttackStrategy = NewObject<UAttackStrategy>();
+		AttackStrategy->Execute(this);
+	}
+	
 	bIsWaiting = false;
 }
 
@@ -172,8 +195,16 @@ void AEnemy::Tick(float DeltaTime)
 		if (StrafeStrategy->HasReachedDestination(this) && !bIsWaiting)
 		{
 			bIsWaiting = true;
-			StrafeStrategy = NewObject<UStrafeStrategy>();
-			StrafeStrategy->Execute(this);
+			if (StrafeStrategy.IsValid())
+			{
+				StrafeStrategy->Execute(this);
+			}
+			else
+			{
+				StrafeStrategy = NewObject<UStrafeStrategy>();
+				StrafeStrategy->Execute(this);
+			}
+			
 			float StrafeDelay = FMath::RandRange(2.0f, GetStrafeDelayMax());
 			FTimerHandle StrafeDelayTimer;
 			GetWorldTimerManager().SetTimer(StrafeDelayTimer, this, &AEnemy::EnemyStrafe, StrafeDelay, false);
