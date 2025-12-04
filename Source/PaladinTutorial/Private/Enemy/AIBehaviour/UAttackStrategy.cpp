@@ -1,15 +1,13 @@
-﻿#include "Enemy/AIBehaviour/AttackStrategy.h"
+﻿#include "Enemy/AIBehaviour/UAttackStrategy.h"
 #include "PaladinCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "Enemy/EnemyAIController.h"
 #include "AIController.h"
 #include "Navigation/PathFollowingComponent.h"
 
-AttackStrategy::AttackStrategy()
-{
-}
+UAttackStrategy::UAttackStrategy() {}
 
-void AttackStrategy::Execute(AEnemy* Enemy)
+void UAttackStrategy::Execute(AEnemy* Enemy)
 {
 	APawn* Pawn = UGameplayStatics::GetPlayerPawn(Enemy->GetWorld(), 0);
 	APaladinCharacter* PaladinCharacter = Cast<APaladinCharacter>(Pawn);
@@ -30,14 +28,14 @@ void AttackStrategy::Execute(AEnemy* Enemy)
 				UPathFollowingComponent* PathFollowingComponent = EnemyAIController->GetPathFollowingComponent();
 				if (PathFollowingComponent)
 				{
-					PathFollowingComponent->OnRequestFinished.AddUObject(this, &AttackStrategy::OnMoveCompleted, Enemy);
+					PathFollowingComponent->OnRequestFinished.AddUObject(this, &UAttackStrategy::OnMoveCompleted, Enemy);
 				}
 			}
 		}
 	}
 }
 
-void AttackStrategy::OnMoveCompleted(FAIRequestID, const FPathFollowingResult& Result, AEnemy* Enemy)
+void UAttackStrategy::OnMoveCompleted(FAIRequestID, const FPathFollowingResult& Result, AEnemy* Enemy)
 {
 	if (Result.IsSuccess())
 	{

@@ -1,4 +1,4 @@
-﻿#include "Enemy/AIBehaviour/PatrolStrategy.h"
+﻿#include "Enemy/AIBehaviour/UPatrolStrategy.h"
 #include "NavigationSystem.h"
 #include "Enemy/Enemy.h"
 #include "AIController.h"
@@ -6,11 +6,9 @@
 #include "Math/UnrealMathUtility.h"
 #include "Navigation/PathFollowingComponent.h"
 
-PatrolStrategy::PatrolStrategy()
-{
-}
+UPatrolStrategy::UPatrolStrategy() {}
 
-void PatrolStrategy::Execute(AEnemy* Enemy)
+void UPatrolStrategy::Execute(AEnemy* Enemy)
 {
 	// Get NavMesh data
 	FNavAgentProperties NavAgentProps;
@@ -37,7 +35,7 @@ void PatrolStrategy::Execute(AEnemy* Enemy)
 	}
 }
 
-bool PatrolStrategy::HasReachedDestination(AEnemy* Enemy)
+bool UPatrolStrategy::HasReachedDestination(AEnemy* Enemy)
 {
 	AEnemyAIController* AIController = Cast<AEnemyAIController>(Enemy->GetController());
 	if (AIController != nullptr)

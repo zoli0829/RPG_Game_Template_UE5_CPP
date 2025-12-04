@@ -5,8 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "HitInterface.h"
-#include "AIBehaviour/AttackStrategy.h"
-#include "AIBehaviour/PatrolStrategy.h"
+#include "AIBehaviour/UAttackStrategy.h"
+#include "AIBehaviour/UPatrolStrategy.h"
 #include "Components/BoxComponent.h"
 #include "Enemy.generated.h"
 
@@ -76,10 +76,9 @@ protected:
 
 private:
 	// Combat strategy logic
-	PatrolStrategy PatrolStrategy;
-	AttackStrategy AttackStrategy;
-	TSharedPtr<ICombatStrategy> CombatStrategy;
-
+	TWeakObjectPtr<UPatrolStrategy> PatrolStrategy;
+	TWeakObjectPtr<UAttackStrategy> AttackStrategy;
+	
 	// This is used in tick for patrolling
 	bool bIsWaiting;
 	bool bCanPatrol;

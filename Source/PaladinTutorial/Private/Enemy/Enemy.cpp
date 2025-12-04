@@ -22,16 +22,17 @@ AEnemy::AEnemy() :
 void AEnemy::EnterCombat()
 {
 	bCanPatrol = false;
-	CombatStrategy = MakeShared<class AttackStrategy>();
-	CombatStrategy->Execute(this);
 
+	AttackStrategy = NewObject<UAttackStrategy>();
+	AttackStrategy->Execute(this);
 }
 
 void AEnemy::ExitCombat()
 {
+	EnemyAIController->ClearFocus(EAIFocusPriority::Gameplay);
 	bCanPatrol = true;
-	CombatStrategy = MakeShared<class PatrolStrategy>();
-	CombatStrategy->Execute(this);
+	PatrolStrategy = NewObject<UPatrolStrategy>();
+	PatrolStrategy->Execute(this);
 	bIsWaiting = false;
 }
 
@@ -129,8 +130,8 @@ FName AEnemy::GetAttackSectionName(int32 SectionCount)
 
 void AEnemy::EnemyPatrol()
 {
-	CombatStrategy = MakeShared<class PatrolStrategy>();
-	CombatStrategy->Execute(this);
+	PatrolStrategy = NewObject<UPatrolStrategy>();
+	PatrolStrategy->Execute(this);
 	bIsWaiting = false;
 }
 
@@ -139,7 +140,7 @@ void AEnemy::Tick(float DeltaTime)
 {
 	if (bCanPatrol)
 	{
-		if (PatrolStrategy.HasReachedDestination(this) && !bIsWaiting)
+		if (PatrolStrategy->HasReachedDestination(this) && !bIsWaiting)
 		{
 			bIsWaiting = true;
 			float PatrolDelay = FMath::RandRange(1.0f, 5.0f);
