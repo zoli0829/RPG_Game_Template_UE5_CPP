@@ -11,37 +11,31 @@ UStrafeStrategy::UStrafeStrategy() {}
 
 void UStrafeStrategy::Execute(AEnemy* Enemy)
 {
-	// Get NavMesh data
-	FNavAgentProperties NavAgentProperties;
-	const ANavigationData* NavData = UNavigationSystemV1::GetCurrent(Enemy->GetWorld())->GetNavDataForProps(NavAgentProperties);
+	if (!Enemy) return;
 
-	if (NavData != nullptr)
+	UNavigationSystemV1* NavSystem = FNavigationSystem::GetCurrent<UNavigationSystemV1>(Enemy->GetWorld());
+	if (!NavSystem) return;
+
+	// Pick a random direction: left, right, or backward
+	const TArray<float> YawOffsets = { -90.f, +90.f, 180.f };
+	const float RandomYaw = YawOffsets[FMath::RandRange(0, YawOffsets.Num() - 1)];
+
+	// Enemy rotation + offset
+	const FRotator Rotation = Enemy->GetActorRotation();
+	const FRotator TargetRotation(0.f, Rotation.Yaw + RandomYaw, 0.f);
+
+	// Convert to vector
+	const FVector Dir = TargetRotation.Vector();
+
+	// Destination 500 units in that direction
+	const FVector TargetPoint = Enemy->GetActorLocation() + Dir * 500.f;
+
+	FNavLocation Result;
+	if (NavSystem->GetRandomPointInNavigableRadius(TargetPoint, 300.f, Result))
 	{
-		FNavLocation ResultLocation;
-
-		UNavigationSystemV1* NavSystem = FNavigationSystem::GetCurrent<UNavigationSystemV1>(Enemy->GetWorld());
-
-		if (NavSystem)
+		if (AEnemyAIController* AI = Cast<AEnemyAIController>(Enemy->GetController()))
 		{
-			// Get current rotation of actor (enemy)
-			// Create a 180 degree rotated rotator
-			// Convert the rotator to a vector
-			const FRotator Rotation = Enemy->GetActorRotation();
-			const FRotator TargetRotation(0, Rotation.Yaw + 180.0f, 0);
-			const FVector Dir = TargetRotation.Vector();
-
-			// Generate a destination point in the opposite direction
-			FVector OppositeDirection = Enemy->GetActorLocation() + (Dir * 500.0f);
-
-			if (NavSystem->GetRandomPointInNavigableRadius(OppositeDirection, 500.0f, ResultLocation))
-			{
-				// Get AI Controller move to location
-				AEnemyAIController* AIController = Cast<AEnemyAIController>(Enemy->GetController());
-				if (AIController != nullptr)
-				{
-					AIController->MoveToLocation(ResultLocation);
-				}
-			}
+			AI->MoveToLocation(Result);
 		}
 	}
 }
