@@ -5,7 +5,9 @@
 #include "Navigation/PathFollowingComponent.h"
 #include "UAttackStrategy.generated.h"
 
+// Declarations
 class AEnemy;
+class APaladinCharacter;
 
 
 UCLASS()
@@ -16,5 +18,5 @@ class UAttackStrategy : public UObject, public ICombatStrategy
 public:
 	UAttackStrategy();
 	virtual void Execute(AEnemy* Enemy) override;
-	virtual void OnMoveCompleted(FAIRequestID, const FPathFollowingResult& Result, AEnemy* Enemy);
+	virtual void OnMoveCompleted(FAIRequestID, const FPathFollowingResult& Result, AEnemy* Enemy, APaladinCharacter* PaladinCharacter);
 };

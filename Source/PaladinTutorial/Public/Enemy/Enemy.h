@@ -60,13 +60,6 @@ public:
 	// Used for AI state
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat")
 	EAIState CurrentState;
-
-	// AI Values
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AI Values")
-	float DistanceToAttackPlayer;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AI Values")
-	float AcceptanceRadius;
 	
 protected:
 	// Called when the game starts or when spawned
@@ -124,4 +117,22 @@ private:
 	// Attack montage
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess="true"))
 	UAnimMontage* AttackMontage;
+
+	// AI values
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess="true"))
+	float AttackRange;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess="true"))
+	float AcceptanceRange;
+
+public:
+	// Getters and setters
+	FORCEINLINE float GetAttackRange() const { return AttackRange; }
+	FORCEINLINE float GetAcceptanceRange() const { return AcceptanceRange; }
+
+	FORCEINLINE float SetAttackRange(const float AttackRangeSet)
+	{
+		AttackRange = AttackRangeSet;
+		return AttackRange;
+	}
 };
