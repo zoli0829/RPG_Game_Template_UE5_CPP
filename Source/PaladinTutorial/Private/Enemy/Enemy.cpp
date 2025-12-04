@@ -12,7 +12,9 @@ AEnemy::AEnemy() :
 	Health(100.0f),
 	MaxHealth(100.0f),
 	AttackRange(300.0f),
-	AcceptanceRange(150.0f)
+	AcceptanceRange(150.0f),
+	StrafeChance(0.3f),
+	StrafeDelayMax(5.0f)
 {
 	// Right weapon collision box
 	RightWeaponCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Right Weapon Box"));
@@ -21,7 +23,7 @@ AEnemy::AEnemy() :
 
 void AEnemy::EnterCombat()
 {
-	CurrentState = EAIState::Combat;
+	CurrentState = EAIState::Attack;
 	// TODO: switch soundtrack
 }
 
@@ -104,18 +106,26 @@ void AEnemy::MeleeAttack()
 			// Play montage section
 			AnimInstance->Montage_Play(AttackMontage);
 			AnimInstance->Montage_JumpToSection(SectionName, AttackMontage);
-			GetWorldTimerManager().SetTimer(TimerAttack, this, &AEnemy::ResetAttack, SectionLength, false);
+
+			// Call reset melee attack 
+			FTimerHandle TimerResetAttack;
+			GetWorldTimerManager().SetTimer(TimerResetAttack, this, &AEnemy::ResetMeleeAttack, SectionLength, false);
 		}
+	}
+}
+
+void AEnemy::ResetMeleeAttack()
+{
+	float RandomChance = FMath:: FRand();
+	if (RandomChance <= GetStrafeChance()) 
+	{
+		CurrentState = EAIState::Strafe;
 	}
 }
 
 void AEnemy::ResetAttack()
 {
-	// We can either call melee attack here or in blueprint, we just need to uncomment the above lines
-	//MeleeAttack();
-	// Reset enemy state
-	// random count 1-4
-	// if < 2 run strafe code or attack again
+	// this might be redundant
 }
 
 FName AEnemy::GetAttackSectionName(int32 SectionCount)
@@ -131,15 +141,44 @@ void AEnemy::EnemyPatrol()
 	bIsWaiting = false;
 }
 
+void AEnemy::EnemyAttack()
+{
+	AttackStrategy = NewObject<UAttackStrategy>();
+	AttackStrategy->Execute(this);
+	bIsWaiting = false;
+}
+
+void AEnemy::EnemyStrafe()
+{
+	bIsWaiting = false;
+	CurrentState = EAIState::Attack;
+}
+
 // Called every frame
 void AEnemy::Tick(float DeltaTime)
 {
 	switch (CurrentState)
 	{
-	case EAIState::Combat:
-		AttackStrategy = NewObject<UAttackStrategy>();
-		AttackStrategy->Execute(this);
+	case EAIState::Attack:
+		if (!bIsWaiting)
+		{
+			bIsWaiting = true;
+			float AttackDelay = FMath::RandRange(0.75f, 2.0f);
+			FTimerHandle AttackDelayTimer;
+			GetWorldTimerManager().SetTimer(AttackDelayTimer, this, &AEnemy::EnemyAttack, AttackDelay, false);
+		}
 		break;
+	case EAIState::Strafe:
+		if (StrafeStrategy->HasReachedDestination(this) && !bIsWaiting)
+		{
+			bIsWaiting = true;
+			StrafeStrategy = NewObject<UStrafeStrategy>();
+			StrafeStrategy->Execute(this);
+			float StrafeDelay = FMath::RandRange(2.0f, GetStrafeDelayMax());
+			FTimerHandle StrafeDelayTimer;
+			GetWorldTimerManager().SetTimer(StrafeDelayTimer, this, &AEnemy::EnemyStrafe, StrafeDelay, false);
+			break;
+		}
 	case EAIState::Patrol:
 		if (PatrolStrategy->HasReachedDestination(this) && !bIsWaiting)
 		{

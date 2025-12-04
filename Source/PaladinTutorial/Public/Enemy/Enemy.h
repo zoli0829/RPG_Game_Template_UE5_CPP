@@ -7,6 +7,7 @@
 #include "HitInterface.h"
 #include "AIBehaviour/UAttackStrategy.h"
 #include "AIBehaviour/UPatrolStrategy.h"
+#include "AIBehaviour/StrafeStrategy.h"
 #include "Components/BoxComponent.h"
 #include "Enemy.generated.h"
 
@@ -40,6 +41,7 @@ public:
 	void ExitCombat();
 
 	void MeleeAttack();
+	void ResetMeleeAttack();
 
 	// Activate and deactivate weapon boxes
 	virtual void ActivateRightWeapon();
@@ -88,11 +90,14 @@ private:
 	// Combat strategy logic
 	TWeakObjectPtr<UPatrolStrategy> PatrolStrategy;
 	TWeakObjectPtr<UAttackStrategy> AttackStrategy;
+	TWeakObjectPtr<UStrafeStrategy> StrafeStrategy;
 	
 	// This is used in tick for patrolling
 	bool bIsWaiting;
 	FTimerHandle PatrolDelayTimer;
 	void EnemyPatrol();
+	void EnemyAttack();
+	void EnemyStrafe();
 	
 	FTimerHandle TimerAttack;
 
@@ -125,10 +130,18 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess="true"))
 	float AcceptanceRange;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess="true"))
+	float StrafeChance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess="true"))
+	float StrafeDelayMax;
+
 public:
 	// Getters and setters
 	FORCEINLINE float GetAttackRange() const { return AttackRange; }
 	FORCEINLINE float GetAcceptanceRange() const { return AcceptanceRange; }
+	FORCEINLINE float GetStrafeChance() const { return StrafeChance; }
+	FORCEINLINE float GetStrafeDelayMax() const { return StrafeDelayMax; }
 
 	FORCEINLINE float SetAttackRange(const float AttackRangeSet)
 	{
