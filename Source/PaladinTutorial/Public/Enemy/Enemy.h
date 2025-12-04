@@ -10,6 +10,19 @@
 #include "Components/BoxComponent.h"
 #include "Enemy.generated.h"
 
+// List of AI states
+UENUM(BlueprintType)
+enum class EAIState : uint8
+{
+	Idle	UMETA(DisplayName="Idle"),
+	Patrol	UMETA(DisplayName="Patrol"),
+	Attack	UMETA(DisplayName="Attack"),
+	Combat	UMETA(DisplayName="Combat"),
+	Strafe	UMETA(DisplayName="Strafe"),
+	Dead	UMETA(DisplayName="Dead")
+};
+
+// Declarations
 class UAnimMontage;
 class AEnemyAIController;
 
@@ -44,11 +57,15 @@ public:
 		AActor* DamageCauser
 		) override;
 
+	// Used for AI state
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat")
+	EAIState CurrentState;
+
 	// AI Values
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AI Values", meta=(AllowPrivateAccess="true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AI Values")
 	float DistanceToAttackPlayer;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AI Values", meta=(AllowPrivateAccess="true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AI Values")
 	float AcceptanceRadius;
 	
 protected:
@@ -81,7 +98,6 @@ private:
 	
 	// This is used in tick for patrolling
 	bool bIsWaiting;
-	bool bCanPatrol;
 	FTimerHandle PatrolDelayTimer;
 	void EnemyPatrol();
 	

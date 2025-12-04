@@ -21,19 +21,15 @@ AEnemy::AEnemy() :
 
 void AEnemy::EnterCombat()
 {
-	bCanPatrol = false;
-
-	AttackStrategy = NewObject<UAttackStrategy>();
-	AttackStrategy->Execute(this);
+	CurrentState = EAIState::Combat;
+	// TODO: switch soundtrack
 }
 
 void AEnemy::ExitCombat()
 {
 	EnemyAIController->ClearFocus(EAIFocusPriority::Gameplay);
-	bCanPatrol = true;
-	PatrolStrategy = NewObject<UPatrolStrategy>();
-	PatrolStrategy->Execute(this);
 	bIsWaiting = false;
+	CurrentState = EAIState::Patrol;
 }
 
 void AEnemy::ActivateRightWeapon()
@@ -52,7 +48,7 @@ void AEnemy::BeginPlay()
 	Super::BeginPlay();
 
 	// Can enemy patrol
-	bCanPatrol = true;
+	CurrentState = EAIState::Patrol;
 
 	// Setup enemy controller
 	EnemyAIController = Cast<AEnemyAIController>(GetController());
@@ -138,8 +134,13 @@ void AEnemy::EnemyPatrol()
 // Called every frame
 void AEnemy::Tick(float DeltaTime)
 {
-	if (bCanPatrol)
+	switch (CurrentState)
 	{
+	case EAIState::Combat:
+		AttackStrategy = NewObject<UAttackStrategy>();
+		AttackStrategy->Execute(this);
+		break;
+	case EAIState::Patrol:
 		if (PatrolStrategy->HasReachedDestination(this) && !bIsWaiting)
 		{
 			bIsWaiting = true;
