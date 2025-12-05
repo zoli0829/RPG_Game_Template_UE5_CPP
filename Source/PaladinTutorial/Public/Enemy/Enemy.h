@@ -86,6 +86,9 @@ protected:
 
 	FName GetAttackSectionName(int32 SectionCount);
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void EnemyDeath();
+
 private:
 	// Combat strategy logic
 	TWeakObjectPtr<UPatrolStrategy> PatrolStrategy;
