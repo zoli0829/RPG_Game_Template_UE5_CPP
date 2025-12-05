@@ -300,9 +300,9 @@ float APaladinCharacter::TakeDamage(float DamageAmount, struct FDamageEvent cons
 		if (Health - DamageAmount <= 0)
 		{
 			Health = 0.0f;
-			// Play death animation
+			// Player death event
 			// TODO: Play HitSFX 
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Player died!"));
+			DeathOfPlayer();
 		}
 		else
 		{

@@ -158,16 +158,13 @@ void AEnemy::EnemyPatrol()
 
 void AEnemy::EnemyAttack()
 {
-	if (PatrolStrategy.IsValid())
+	if (!AttackStrategy.IsValid())
 	{
-		AttackStrategy->Execute(this);
+		AttackStrategy = NewObject<UAttackStrategy>(this);
 	}
-	else
-	{
-		AttackStrategy = NewObject<UAttackStrategy>();
-		AttackStrategy->Execute(this);
-	}
-	
+
+	AttackStrategy->Execute(this);
+
 	bIsWaiting = false;
 }
 

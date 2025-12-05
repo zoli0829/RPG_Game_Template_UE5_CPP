@@ -97,6 +97,10 @@ protected:
 	void StartBlocking();
 	void StopBlocking();
 
+	// Handle logic after player dies
+	UFUNCTION(BlueprintImplementableEvent)
+	void DeathOfPlayer();
+
 	void AnimMontagePlay(UAnimMontage* MontageToPlay, FName SectionName = "Default", float PlayRate = 1.0f);
 
 	// Right weapon overlap
