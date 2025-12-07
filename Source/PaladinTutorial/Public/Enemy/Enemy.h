@@ -44,7 +44,7 @@ public:
 	void ExitCombat();
 
 	void Attack();
-	void ResetMeleeAttack();
+	void ResetAttack();
 
 	// Spawn projectile for enemy projectile
 	void SpawnProjectile();
@@ -86,9 +86,6 @@ protected:
 		int32 OtherBodyIndex,
 		bool bFromSweep,
 		const FHitResult& SweepResult);
-
-	UFUNCTION(BlueprintCallable)
-	void ResetAttack();
 
 	FName GetAttackSectionName(int32 SectionCount);
 

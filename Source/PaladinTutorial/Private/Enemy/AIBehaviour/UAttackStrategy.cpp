@@ -21,6 +21,12 @@ void UAttackStrategy::Execute(AEnemy* Enemy)
 			// Set focus on the player
 			EnemyAIController->SetFocus(PaladinCharacter);
 
+			// Check player and enemy distance for acceptance range to attack
+			if (PlayerEnemyDistance(Enemy, PaladinCharacter) <= Enemy->GetAcceptanceRange())
+			{
+				Enemy->Attack();
+			}
+
 			EPathFollowingRequestResult::Type MoveResult = EnemyAIController->MoveToActor(PaladinCharacter, Enemy->GetAcceptanceRange(), true, true, true, nullptr, true);
 
 			if (MoveResult == EPathFollowingRequestResult::RequestSuccessful)
@@ -39,14 +45,19 @@ void UAttackStrategy::OnMoveCompleted(FAIRequestID, const FPathFollowingResult& 
 {
 	if (Result.IsSuccess())
 	{
-		FVector PaladinPos = PaladinCharacter->GetActorLocation();
-		FVector EnemyPos = Enemy->GetActorLocation();
-		float Distance = FVector::Dist(EnemyPos, PaladinPos);
-
 		// Make sure in range to attack player
-		if (Distance <= Enemy->GetAttackRange())
+		if (PlayerEnemyDistance(Enemy, PaladinCharacter) <= Enemy->GetAttackRange())
 		{
 			Enemy->Attack();
 		}
 	}
+}
+
+float UAttackStrategy::PlayerEnemyDistance(AEnemy* Enemy, APaladinCharacter* PaladinCharacter)
+{
+	FVector PaladinPos = PaladinCharacter->GetActorLocation();
+	FVector EnemyPos = Enemy->GetActorLocation();
+	float Distance = FVector::Dist(EnemyPos, PaladinPos);
+
+	return Distance;
 }

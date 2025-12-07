@@ -120,12 +120,12 @@ void AEnemy::Attack()
 
 			// Call reset melee attack 
 			FTimerHandle TimerResetAttack;
-			GetWorldTimerManager().SetTimer(TimerResetAttack, this, &AEnemy::ResetMeleeAttack, SectionLength, false);
+			GetWorldTimerManager().SetTimer(TimerResetAttack, this, &AEnemy::ResetAttack, SectionLength, false);
 		}
 	}
 }
 
-void AEnemy::ResetMeleeAttack()
+void AEnemy::ResetAttack()
 {
 	float RandomChance = FMath:: FRand();
 	if (RandomChance <= GetStrafeChance()) 
@@ -144,11 +144,6 @@ void AEnemy::SpawnProjectile()
 
 	// Spawn the projectile
 	AEnemyProjectile* Projectile = GetWorld()->SpawnActor<AEnemyProjectile>(ProjectileBP, SocketTransform, SpawnParameters);
-}
-
-void AEnemy::ResetAttack()
-{
-	// this might be redundant
 }
 
 FName AEnemy::GetAttackSectionName(int32 SectionCount)

@@ -19,4 +19,7 @@ public:
 	UAttackStrategy();
 	virtual void Execute(AEnemy* Enemy) override;
 	virtual void OnMoveCompleted(FAIRequestID, const FPathFollowingResult& Result, AEnemy* Enemy, APaladinCharacter* PaladinCharacter);
+
+private:
+	float PlayerEnemyDistance(AEnemy* Enemy, APaladinCharacter* PaladinCharacter);
 };
