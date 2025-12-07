@@ -225,7 +225,9 @@ void AEnemy::HitInterface_Implementation(FHitResult HitResult)
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation());
 	}
-	// impact niagara effect
+	// Impact niagara effect
+	const FVector SpawnLocation = GetMesh()->GetBoneLocation(ImpactBoneLocation, EBoneSpaces::WorldSpace);
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ImpactParticles, SpawnLocation, GetActorRotation());
 	
 	// hit montage
 	

@@ -7,6 +7,7 @@
 #include "InputActionValue.h"
 #include "Components/BoxComponent.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "PaladinCharacter.generated.h"
 
 // Declarations
@@ -16,6 +17,7 @@ class UInputMappingContext;
 class UInputAction;
 class UAnimMontage;
 class USoundCue;
+class UNiagaraSystem;
 
 UCLASS()
 class PALADINTUTORIAL_API APaladinCharacter : public ACharacter
@@ -142,11 +144,25 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess="true"))
 	float MaxHealth;
 
+	// Sounds
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess="true"))
 	USoundCue* BodyImpactSound;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess="true"))
 	USoundCue* ShieldImpactSound;
+
+	// FXs
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess="true"))
+	UNiagaraSystem* BloodParticles;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess="true"))
+	UNiagaraSystem* ShieldBlockingParticles;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess="true"))
+	FName BloodImpactBoneLocation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess="true"))
+	FName ShieldImpactBoneLocation;
 
 	bool PlayerFacingActor(AActor* FacingActor);
 

@@ -297,7 +297,11 @@ float APaladinCharacter::TakeDamage(float DamageAmount, struct FDamageEvent cons
 		if (Health - DamageAmount <= 0)
 		{
 			Health = 0.0f;
-			// Player death event
+			
+			// Play impact niagara effect
+			const FVector SpawnLocation = GetMesh()->GetBoneLocation(BloodImpactBoneLocation, EBoneSpaces::WorldSpace);
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), BloodParticles, SpawnLocation, GetActorRotation());
+			
 			// Play hit SFX
 			if (BodyImpactSound)
 			{
@@ -312,6 +316,10 @@ float APaladinCharacter::TakeDamage(float DamageAmount, struct FDamageEvent cons
 		{
 			// TODO: Play hit animation
 			Health -= DamageAmount;
+
+			// Play impact niagara effect
+			const FVector SpawnLocation = GetMesh()->GetBoneLocation(BloodImpactBoneLocation, EBoneSpaces::WorldSpace);
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), BloodParticles, SpawnLocation, GetActorRotation());
 			
 			// Play hit SFX
 			if (BodyImpactSound)
@@ -331,6 +339,10 @@ float APaladinCharacter::TakeDamage(float DamageAmount, struct FDamageEvent cons
 			{
 				UGameplayStatics::PlaySoundAtLocation(this, ShieldImpactSound, GetActorLocation());
 			}
+
+			// Play impact niagara effect
+			const FVector SpawnLocation = GetMesh()->GetBoneLocation(ShieldImpactBoneLocation, EBoneSpaces::WorldSpace);
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ShieldBlockingParticles, SpawnLocation, GetActorRotation());
 			
 			// TODO: Play block impact animation maybe
 		}
@@ -343,6 +355,10 @@ float APaladinCharacter::TakeDamage(float DamageAmount, struct FDamageEvent cons
 			{
 				UGameplayStatics::PlaySoundAtLocation(this, BodyImpactSound, GetActorLocation());
 			}
+
+			// Play impact niagara effect
+			const FVector SpawnLocation = GetMesh()->GetBoneLocation(BloodImpactBoneLocation, EBoneSpaces::WorldSpace);
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), BloodParticles, SpawnLocation, GetActorRotation());
 			
 			// TODO: Play hit animation
 		}

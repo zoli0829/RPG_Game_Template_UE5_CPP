@@ -9,6 +9,7 @@
 #include "AIBehaviour/UPatrolStrategy.h"
 #include "AIBehaviour/StrafeStrategy.h"
 #include "Components/BoxComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Enemy.generated.h"
 
 // List of AI states
@@ -27,6 +28,7 @@ enum class EAIState : uint8
 class UAnimMontage;
 class AEnemyAIController;
 class USoundCue;
+class UNiagaraSystem;
 
 UCLASS()
 class PALADINTUTORIAL_API AEnemy : public ACharacter, public IHitInterface
@@ -140,8 +142,16 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess="true"))
 	float StrafeDelayMax;
 
+	// Sounds
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess="true"))
 	USoundCue* ImpactSound; // SoundCue which will randomize the sound and pitch in BP
+
+	// FXs
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess="true"))
+	UNiagaraSystem* ImpactParticles;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess="true"))
+	FName ImpactBoneLocation;
 
 public:
 	// Getters and setters
