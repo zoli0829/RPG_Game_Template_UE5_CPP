@@ -4,6 +4,8 @@
 #include "Enemy/Enemy.h"
 #include "PaladinCharacter.h"
 #include "Enemy/EnemyAIController.h"
+#include "Enemy/EnemyProjectile.h"
+#include "EntitySystem/MovieSceneEntitySystemTypes.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
 
@@ -129,6 +131,18 @@ void AEnemy::ResetMeleeAttack()
 	{
 		CurrentState = EAIState::Strafe;
 	}
+}
+
+void AEnemy::SpawnProjectile()
+{
+	// Get socket transform
+	FTransform SocketTransform = GetMesh()->GetSocketTransform("ProjectileSocket");
+	
+	// Set spawn parameters
+	FActorSpawnParameters SpawnParameters;
+
+	// Spawn the projectile
+	AEnemyProjectile* Projectile = GetWorld()->SpawnActor<AEnemyProjectile>(ProjectileBP, SocketTransform, SpawnParameters);
 }
 
 void AEnemy::ResetAttack()

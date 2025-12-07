@@ -46,6 +46,9 @@ public:
 	void MeleeAttack();
 	void ResetMeleeAttack();
 
+	// Spawn projectile for enemy projectile
+	void SpawnProjectile();
+
 	// Activate and deactivate weapon boxes
 	virtual void ActivateRightWeapon();
 	virtual void DeactivateRightWeapon();
@@ -113,6 +116,10 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess="true"))
 	FName RightWeaponSocketName = "RightWeaponSocket";
+
+	// Get blueprint of projectile. Set this in Enemy BP
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess="true"))
+	TSubclassOf<class AEnemyProjectile> ProjectileBP;
 	
 	// Base damage
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess="true"))
