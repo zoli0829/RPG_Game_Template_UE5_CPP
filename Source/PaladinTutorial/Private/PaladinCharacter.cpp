@@ -43,8 +43,11 @@ APaladinCharacter::APaladinCharacter() :
 	RightWeaponCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Right Weapon Box"));
 	RightWeaponCollision->SetupAttachment(GetMesh(), FName("SwordSocket"));
 
-	// Stimuli
+	// Stimulus
 	SetupStimulusSource();
+
+	// Motion warping component
+	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("Motion Warp Component"));
 }
 
 // Called when the game starts or when spawned
@@ -72,6 +75,11 @@ void APaladinCharacter::BeginPlay()
 	RightWeaponCollision->SetCollisionResponseToAllChannels(ECR_Ignore);
 	RightWeaponCollision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECR_Overlap);
 	
+}
+
+void APaladinCharacter::MotionWarpAttack(float AttackDistance, FName MotionWarpName)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Cyan, TEXT("Motion warp attack"));
 }
 
 void APaladinCharacter::Move(const FInputActionValue& InputValue)
@@ -154,6 +162,7 @@ void APaladinCharacter::SpinAttack()
 
 void APaladinCharacter::JumpAttack()
 {
+	MotionWarpAttack(1000, "Attack4");
 	AnimMontagePlay(AttackMontage, FName("Attack4"), 1.25f);
 }
 

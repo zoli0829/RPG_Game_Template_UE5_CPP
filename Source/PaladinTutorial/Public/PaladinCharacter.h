@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "MotionWarpingComponent.h"
+#include "MotionWarpingClasses.h"
 #include "Components/BoxComponent.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "NiagaraFunctionLibrary.h"
@@ -18,6 +20,7 @@ class UInputAction;
 class UAnimMontage;
 class USoundCue;
 class UNiagaraSystem;
+class UMotionWarpingComponent;
 
 UCLASS()
 class PALADINTUTORIAL_API APaladinCharacter : public ACharacter
@@ -43,6 +46,12 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	// Motion warping
+	UPROPERTY(EditAnywhere, Category="Combat")
+	UMotionWarpingComponent* MotionWarpingComponent;
+
+	void MotionWarpAttack(float AttackDistance, FName MotionWarpName);
 
 	// Input actions
 	UPROPERTY(EditAnywhere, Category="EnhancedInput")

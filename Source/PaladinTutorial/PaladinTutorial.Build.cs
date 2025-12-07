@@ -16,7 +16,8 @@ public class PaladinTutorial : ModuleRules
 			"InputCore", 
 			"EnhancedInput", 
 			"AIModule", 
-			"NavigationSystem"
+			"NavigationSystem",
+			"MotionWarping"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[]
