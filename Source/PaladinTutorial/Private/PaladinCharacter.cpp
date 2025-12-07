@@ -11,6 +11,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Perception/AISense_Sight.h"
+#include "Sound/SoundCue.h"
 
 // Sets default values
 APaladinCharacter::APaladinCharacter() :
@@ -158,8 +159,6 @@ void APaladinCharacter::JumpAttack()
 
 void APaladinCharacter::StartBlocking()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, TEXT("Start Blocking"));
-	
 	UPaladinAnimInstance* AnimInstance = Cast<UPaladinAnimInstance>(GetMesh()->GetAnimInstance());
 	if (AnimInstance)
 	{
@@ -172,8 +171,6 @@ void APaladinCharacter::StartBlocking()
 
 void APaladinCharacter::StopBlocking()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("Stop Blocking"));
-
 	UPaladinAnimInstance* AnimInstance = Cast<UPaladinAnimInstance>(GetMesh()->GetAnimInstance());
 	if (AnimInstance)
 	{
@@ -301,16 +298,27 @@ float APaladinCharacter::TakeDamage(float DamageAmount, struct FDamageEvent cons
 		{
 			Health = 0.0f;
 			// Player death event
-			// TODO: Play HitSFX 
+			// Play hit SFX
+			if (BodyImpactSound)
+			{
+				UGameplayStatics::PlaySoundAtLocation(this, BodyImpactSound, GetActorLocation());
+			}
+
+			// TODO: Play death sound
+			
 			DeathOfPlayer();
 		}
 		else
 		{
 			// TODO: Play hit animation
 			Health -= DamageAmount;
+			
+			// Play hit SFX
+			if (BodyImpactSound)
+			{
+				UGameplayStatics::PlaySoundAtLocation(this, BodyImpactSound, GetActorLocation());
+			}
 		}
-		// TODO: Play HitSFX
-		
 	}
 	// Is blocking == true
 	else
@@ -318,15 +326,24 @@ float APaladinCharacter::TakeDamage(float DamageAmount, struct FDamageEvent cons
 		// Check if player is facing the enemy -> Run dot product logic
 		if (PlayerFacingActor(DamageCauser))
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("blocking and facing enemy"));
-			// TODO: Play BlockSFX
+			// Play BlockSFX
+			if (ShieldImpactSound)
+			{
+				UGameplayStatics::PlaySoundAtLocation(this, ShieldImpactSound, GetActorLocation());
+			}
+			
 			// TODO: Play block impact animation maybe
 		}
 		else
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("blocking and NOT facing enemy"));
 			Health -= DamageAmount;
-			// TODO: Play HitSFX
+			
+			// Play HitSFX
+			if (BodyImpactSound)
+			{
+				UGameplayStatics::PlaySoundAtLocation(this, BodyImpactSound, GetActorLocation());
+			}
+			
 			// TODO: Play hit animation
 		}
 	}

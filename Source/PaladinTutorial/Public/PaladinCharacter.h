@@ -15,6 +15,7 @@ class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
 class UAnimMontage;
+class USoundCue;
 
 UCLASS()
 class PALADINTUTORIAL_API APaladinCharacter : public ACharacter
@@ -140,6 +141,12 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess="true"))
 	float MaxHealth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess="true"))
+	USoundCue* BodyImpactSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess="true"))
+	USoundCue* ShieldImpactSound;
 
 	bool PlayerFacingActor(AActor* FacingActor);
 

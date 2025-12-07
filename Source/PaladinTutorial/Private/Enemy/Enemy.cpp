@@ -5,6 +5,7 @@
 #include "PaladinCharacter.h"
 #include "Enemy/EnemyAIController.h"
 #include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 // Sets default values
 AEnemy::AEnemy() :
@@ -220,8 +221,14 @@ void AEnemy::Tick(float DeltaTime)
 void AEnemy::HitInterface_Implementation(FHitResult HitResult)
 {
 	// impact sound
+	if (ImpactSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation());
+	}
 	// impact niagara effect
+	
 	// hit montage
+	
 }
 
 float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,

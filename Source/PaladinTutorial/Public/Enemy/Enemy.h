@@ -26,6 +26,7 @@ enum class EAIState : uint8
 // Declarations
 class UAnimMontage;
 class AEnemyAIController;
+class USoundCue;
 
 UCLASS()
 class PALADINTUTORIAL_API AEnemy : public ACharacter, public IHitInterface
@@ -138,6 +139,9 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess="true"))
 	float StrafeDelayMax;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess="true"))
+	USoundCue* ImpactSound; // SoundCue which will randomize the sound and pitch in BP
 
 public:
 	// Getters and setters
