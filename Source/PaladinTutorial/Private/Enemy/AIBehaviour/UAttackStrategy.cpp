@@ -46,7 +46,7 @@ void UAttackStrategy::OnMoveCompleted(FAIRequestID, const FPathFollowingResult& 
 		// Make sure in range to attack player
 		if (Distance <= Enemy->GetAttackRange())
 		{
-			Enemy->MeleeAttack();
+			Enemy->Attack();
 		}
 	}
 }

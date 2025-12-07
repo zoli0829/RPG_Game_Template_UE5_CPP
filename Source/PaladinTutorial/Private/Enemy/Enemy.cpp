@@ -17,7 +17,8 @@ AEnemy::AEnemy() :
 	AttackRange(300.0f),
 	AcceptanceRange(150.0f),
 	StrafeChance(0.3f),
-	StrafeDelayMax(5.0f)
+	StrafeDelayMax(5.0f),
+	AnimationPlayRate(1.0f)
 {
 	// Right weapon collision box
 	RightWeaponCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Right Weapon Box"));
@@ -96,7 +97,7 @@ void AEnemy::OnRightWeaponOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 	}
 }
 
-void AEnemy::MeleeAttack()
+void AEnemy::Attack()
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 
@@ -114,7 +115,7 @@ void AEnemy::MeleeAttack()
 			float const SectionLength = AttackMontage->GetSectionLength(SectionIndex);
 
 			// Play montage section
-			AnimInstance->Montage_Play(AttackMontage);
+			AnimInstance->Montage_Play(AttackMontage, AnimationPlayRate);
 			AnimInstance->Montage_JumpToSection(SectionName, AttackMontage);
 
 			// Call reset melee attack 

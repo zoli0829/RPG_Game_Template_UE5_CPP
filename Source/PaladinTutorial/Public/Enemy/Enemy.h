@@ -43,7 +43,7 @@ public:
 	void EnterCombat();
 	void ExitCombat();
 
-	void MeleeAttack();
+	void Attack();
 	void ResetMeleeAttack();
 
 	// Spawn projectile for enemy projectile
@@ -148,6 +148,9 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess="true"))
 	float StrafeDelayMax;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess="true"))
+	float AnimationPlayRate;
 
 	// Sounds
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess="true"))
