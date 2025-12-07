@@ -52,6 +52,7 @@ protected:
 	UMotionWarpingComponent* MotionWarpingComponent;
 
 	void MotionWarpAttack(float AttackDistance, FName MotionWarpName);
+	void ResetWarpAttack();
 
 	// Input actions
 	UPROPERTY(EditAnywhere, Category="EnhancedInput")

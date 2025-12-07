@@ -8,6 +8,7 @@
 #include "EnhancedInputComponent.h"
 #include "PaladinAnimInstance.h"
 #include "HitInterface.h"
+#include "Enemy/Enemy.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Perception/AISense_Sight.h"
@@ -79,7 +80,39 @@ void APaladinCharacter::BeginPlay()
 
 void APaladinCharacter::MotionWarpAttack(float AttackDistance, FName MotionWarpName)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Cyan, TEXT("Motion warp attack"));
+	const FVector Start = GetActorLocation();
+	const FVector End = Start + GetActorForwardVector() * AttackDistance;
+	FHitResult HitResult;
+
+	// Set up collision query params to ignore the player
+	FCollisionQueryParams TraceParams(FName(TEXT("AttackTrace")), true, this);
+	TraceParams.bReturnPhysicalMaterial = false;
+
+	// Perform  line trace
+	ECollisionChannel Ecc_Channel = ECC_Pawn;
+	if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, Ecc_Channel, TraceParams))
+	{
+		AEnemy* Enemy = Cast<AEnemy>(HitResult.GetActor());
+		if (Enemy && MotionWarpingComponent)
+		{
+			if (HitResult.bBlockingHit && HitResult.GetActor() == Enemy)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Hit Enemy"));
+				MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(MotionWarpName, HitResult.Location);
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Enemy is null or MotionWarpingComponent is null!"));
+		}
+
+		DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 1, 0, 1);
+	}
+}
+
+void APaladinCharacter::ResetWarpAttack()
+{
+	MotionWarpingComponent->RemoveAllWarpTargets();
 }
 
 void APaladinCharacter::Move(const FInputActionValue& InputValue)
@@ -199,6 +232,12 @@ void APaladinCharacter::AnimMontagePlay(UAnimMontage* MontageToPlay, FName Secti
 		if (!AnimInstance->Montage_IsPlaying(MontageToPlay))
 		{
 			PlayAnimMontage(MontageToPlay, PlayRate, SectionName);
+		}
+
+		if (MontageToPlay == AttackMontage && SectionName == "Attack4")
+		{
+			FTimerHandle WarpTimer;
+			GetWorldTimerManager().SetTimer(WarpTimer, this, &APaladinCharacter::ResetWarpAttack, 2.0f, false);
 		}
 	}
 }
