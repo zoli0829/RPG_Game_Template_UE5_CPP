@@ -138,7 +138,6 @@ void APaladinCharacter::MotionWarpAttack(float AttackDistance, FName MotionWarpN
 		{
 			if (HitResult.bBlockingHit && HitResult.GetActor() == Enemy)
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Hit Enemy"));
 				MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(MotionWarpName, HitResult.Location);
 			}
 		}
@@ -147,7 +146,7 @@ void APaladinCharacter::MotionWarpAttack(float AttackDistance, FName MotionWarpN
 			UE_LOG(LogTemp, Warning, TEXT("Enemy is null or MotionWarpingComponent is null!"));
 		}
 
-		DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 1, 0, 1);
+		//DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 1, 0, 1);
 	}
 }
 

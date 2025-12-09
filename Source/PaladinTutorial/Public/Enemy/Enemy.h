@@ -117,6 +117,10 @@ private:
 	// Get blueprint of projectile. Set this in Enemy BP
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess="true"))
 	TSubclassOf<class AEnemyProjectile> ProjectileBP;
+
+	// Enemy name
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess="true"))
+	FName EnemyName;
 	
 	// Base damage
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess="true"))
