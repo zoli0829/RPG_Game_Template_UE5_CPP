@@ -17,4 +17,7 @@ class PALADINTUTORIAL_API UPlayerSaveGame : public USaveGame
 public:
 	UPROPERTY(VisibleAnywhere, Category="SaveGame")
 	float Health;
+
+	UPROPERTY(VisibleAnywhere, Category="SaveGame")
+	FVector CheckPointLocation;
 };

@@ -43,6 +43,11 @@ public:
 	// Sets default values for this character's properties
 	APaladinCharacter();
 
+	// Save and load player data
+	UFUNCTION(BlueprintCallable, Category="Saved Data")
+	void SavePlayerData();
+	void LoadPlayerData();
+
 	// Current state
 	EPlayerState CurrentState;
 
@@ -163,6 +168,9 @@ protected:
 private:
 	// Timers
 	FTimerHandle TimerDodgeRoll;
+
+	// Last checkpoint location
+	FVector CheckpointLocation;
 	
 	// Spring arm component
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category ="Camera", meta=(AllowPrivateAccess="true"))
