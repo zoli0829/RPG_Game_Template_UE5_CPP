@@ -203,30 +203,30 @@ void APaladinCharacter::JumpAttack()
 
 void APaladinCharacter::DodgeBack()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, TEXT("Dodged back"));
 	CurrentState = EPlayerState::BlockDodge;
 	AnimMontagePlay(DodgeMontage, FName("DodgeBack"));
+	GetWorldTimerManager().SetTimer(TimerDodgeRoll, this, &APaladinCharacter::ResetDodgeRoll, 1.5f);
 }
 
 void APaladinCharacter::DodgeLeft()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, TEXT("Dodged left"));
 	CurrentState = EPlayerState::BlockDodge;
 	AnimMontagePlay(DodgeMontage, FName("DodgeLeft"));
+	GetWorldTimerManager().SetTimer(TimerDodgeRoll, this, &APaladinCharacter::ResetDodgeRoll, 1.5f);
 }
 
 void APaladinCharacter::DodgeRight()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, TEXT("Dodged right"));
 	CurrentState = EPlayerState::BlockDodge;
 	AnimMontagePlay(DodgeMontage, FName("DodgeRight"));
+	GetWorldTimerManager().SetTimer(TimerDodgeRoll, this, &APaladinCharacter::ResetDodgeRoll, 1.5f);
 }
 
 void APaladinCharacter::DodgeForward()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, TEXT("Dodged forward"));
 	CurrentState = EPlayerState::BlockDodge;
 	AnimMontagePlay(DodgeMontage, FName("DodgeForward"));
+	GetWorldTimerManager().SetTimer(TimerDodgeRoll, this, &APaladinCharacter::ResetDodgeRoll, 1.5f);
 }
 
 void APaladinCharacter::StartBlocking()
@@ -252,6 +252,11 @@ void APaladinCharacter::StopBlocking()
 		CurrentState = EPlayerState::Ready;
 		AnimInstance->SetIsBlocking(false);
 	}
+}
+
+void APaladinCharacter::ResetDodgeRoll()
+{
+	CurrentState = EPlayerState::Ready;
 }
 
 void APaladinCharacter::AnimMontagePlay(UAnimMontage* MontageToPlay, FName SectionName, float PlayRate)
@@ -376,7 +381,6 @@ void APaladinCharacter::DeactivateRightWeapon()
 float APaladinCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
 	class AController* EventInstigator, AActor* DamageCauser)
 {
-	UPaladinAnimInstance* AnimInstance = Cast<UPaladinAnimInstance>(GetMesh()->GetAnimInstance());
 	// If the player is not blocking
 	if (CurrentState != EPlayerState::BlockDodge)
 	{
@@ -420,8 +424,9 @@ float APaladinCharacter::TakeDamage(float DamageAmount, struct FDamageEvent cons
 		// Check if player is facing the enemy -> Run dot product logic
 		if (PlayerFacingActor(DamageCauser))
 		{
+			UPaladinAnimInstance* AnimInstance = Cast<UPaladinAnimInstance>(GetMesh()->GetAnimInstance());
 			// Play BlockSFX
-			if (ShieldImpactSound)
+			if (ShieldImpactSound && AnimInstance->GetIsBlocking())
 			{
 				UGameplayStatics::PlaySoundAtLocation(this, ShieldImpactSound, GetActorLocation());
 			}

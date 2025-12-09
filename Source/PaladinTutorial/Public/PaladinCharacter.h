@@ -142,6 +142,7 @@ protected:
 	// Block
 	void StartBlocking();
 	void StopBlocking();
+	void ResetDodgeRoll();
 
 	// Handle logic after player dies
 	UFUNCTION(BlueprintImplementableEvent)
@@ -160,6 +161,9 @@ protected:
 		const FHitResult& SweepResult);
 
 private:
+	// Timers
+	FTimerHandle TimerDodgeRoll;
+	
 	// Spring arm component
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category ="Camera", meta=(AllowPrivateAccess="true"))
 	USpringArmComponent* SpringArmComponent;
