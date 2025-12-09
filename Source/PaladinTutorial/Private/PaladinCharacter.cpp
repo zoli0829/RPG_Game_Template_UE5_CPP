@@ -56,6 +56,8 @@ void APaladinCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	CurrentState = EPlayerState::Ready;
+
 	// Add input mapping content
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
@@ -202,21 +204,29 @@ void APaladinCharacter::JumpAttack()
 void APaladinCharacter::DodgeBack()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, TEXT("Dodged back"));
+	CurrentState = EPlayerState::BlockDodge;
+	AnimMontagePlay(DodgeMontage, FName("DodgeBack"));
 }
 
 void APaladinCharacter::DodgeLeft()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, TEXT("Dodged left"));
+	CurrentState = EPlayerState::BlockDodge;
+	AnimMontagePlay(DodgeMontage, FName("DodgeLeft"));
 }
 
 void APaladinCharacter::DodgeRight()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, TEXT("Dodged right"));
+	CurrentState = EPlayerState::BlockDodge;
+	AnimMontagePlay(DodgeMontage, FName("DodgeRight"));
 }
 
 void APaladinCharacter::DodgeForward()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, TEXT("Dodged forward"));
+	CurrentState = EPlayerState::BlockDodge;
+	AnimMontagePlay(DodgeMontage, FName("DodgeForward"));
 }
 
 void APaladinCharacter::StartBlocking()
@@ -226,7 +236,8 @@ void APaladinCharacter::StartBlocking()
 	{
 		// If you want to stop the player from moving when blocking uncomment the DisableMovement() and the StopBlocking() from below below
 		//GetCharacterMovement()->DisableMovement();
-		
+
+		CurrentState = EPlayerState::BlockDodge;
 		AnimInstance->SetIsBlocking(true);
 	}
 }
@@ -237,7 +248,8 @@ void APaladinCharacter::StopBlocking()
 	if (AnimInstance)
 	{
 		//GetCharacterMovement()->SetMovementMode(MOVE_Walking); // uncomment if you want to stop the player from moving
-		
+
+		CurrentState = EPlayerState::Ready;
 		AnimInstance->SetIsBlocking(false);
 	}
 }
@@ -366,7 +378,7 @@ float APaladinCharacter::TakeDamage(float DamageAmount, struct FDamageEvent cons
 {
 	UPaladinAnimInstance* AnimInstance = Cast<UPaladinAnimInstance>(GetMesh()->GetAnimInstance());
 	// If the player is not blocking
-	if (AnimInstance->GetIsBlocking() == false)
+	if (CurrentState != EPlayerState::BlockDodge)
 	{
 		if (Health - DamageAmount <= 0)
 		{

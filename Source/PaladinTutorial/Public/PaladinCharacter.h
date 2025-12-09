@@ -12,6 +12,18 @@
 #include "NiagaraFunctionLibrary.h"
 #include "PaladinCharacter.generated.h"
 
+UENUM(BlueprintType)
+enum class EPlayerState : uint8
+{
+	Ready		UMETA(DisplayName="Ready"),
+	NotReady	UMETA(DisplayName="NotReady"),
+	Attacking	UMETA(DisplayName="Attacking"),
+	BlockDodge	UMETA(DisplayName="BlockDodge"),
+	Stunned		UMETA(DisplayName="Stunned"),
+	Interacting	UMETA(DisplayName="Interacting"),
+	Dead		UMETA(DisplayName="Dead")
+};
+
 // Declarations
 class USpringArmComponent;
 class UCameraComponent;
@@ -30,6 +42,9 @@ class PALADINTUTORIAL_API APaladinCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	APaladinCharacter();
+
+	// Current state
+	EPlayerState CurrentState;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
