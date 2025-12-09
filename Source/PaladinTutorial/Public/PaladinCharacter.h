@@ -85,6 +85,18 @@ protected:
 	UPROPERTY(EditAnywhere, Category="EnhancedInput")
 	UInputAction* BlockAction;
 
+	UPROPERTY(EditAnywhere, Category="EnhancedInput")
+	UInputAction* DodgeBackAction;
+
+	UPROPERTY(EditAnywhere, Category="EnhancedInput")
+	UInputAction* DodgeLeftAction;
+
+	UPROPERTY(EditAnywhere, Category="EnhancedInput")
+	UInputAction* DodgeRightAction;
+
+	UPROPERTY(EditAnywhere, Category="EnhancedInput")
+	UInputAction* DodgeForwardAction;
+
 	// Walk speed
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Movement")
 	float WalkSpeed;
@@ -105,6 +117,12 @@ protected:
 	void HeavyAttack();
 	void SpinAttack();
 	void JumpAttack();
+
+	// Dodge Roll
+	void DodgeBack();
+	void DodgeLeft();
+	void DodgeRight();
+	void DodgeForward();
 
 	// Block
 	void StartBlocking();
@@ -138,6 +156,9 @@ private:
 	// Montages
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Montages", meta=(AllowPrivateAccess="true"))
 	UAnimMontage* AttackMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Montages", meta=(AllowPrivateAccess="true"))
+	UAnimMontage* DodgeMontage;
 
 	// Collisions
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat", meta=(AllowPrivateAccess="true"))

@@ -199,6 +199,26 @@ void APaladinCharacter::JumpAttack()
 	AnimMontagePlay(AttackMontage, FName("Attack4"), 1.25f);
 }
 
+void APaladinCharacter::DodgeBack()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, TEXT("Dodged back"));
+}
+
+void APaladinCharacter::DodgeLeft()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, TEXT("Dodged left"));
+}
+
+void APaladinCharacter::DodgeRight()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, TEXT("Dodged right"));
+}
+
+void APaladinCharacter::DodgeForward()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, TEXT("Dodged forward"));
+}
+
 void APaladinCharacter::StartBlocking()
 {
 	UPaladinAnimInstance* AnimInstance = Cast<UPaladinAnimInstance>(GetMesh()->GetAnimInstance());
@@ -322,6 +342,12 @@ void APaladinCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 		Input->BindAction(HeavyAttackAction, ETriggerEvent::Completed, this, &APaladinCharacter::HeavyAttack); // or Triggered, whichever feels better
 		Input->BindAction(SpinAttackAction, ETriggerEvent::Completed, this, &APaladinCharacter::SpinAttack);
 		Input->BindAction(JumpAttackAction, ETriggerEvent::Completed, this, &APaladinCharacter::JumpAttack);
+
+		// Dodge actions
+		Input->BindAction(DodgeBackAction, ETriggerEvent::Triggered, this, &APaladinCharacter::DodgeBack);
+		Input->BindAction(DodgeLeftAction, ETriggerEvent::Triggered, this, &APaladinCharacter::DodgeLeft);
+		Input->BindAction(DodgeRightAction, ETriggerEvent::Triggered, this, &APaladinCharacter::DodgeRight);
+		Input->BindAction(DodgeForwardAction, ETriggerEvent::Triggered, this, &APaladinCharacter::DodgeForward);
 	}
 }
 
