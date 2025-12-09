@@ -4,8 +4,8 @@ Template is based on [Chris Hall's Udemy course](https://www.udemy.com/course/un
 ## Screenshots
 
 <p align="center">
-  <img src="screenshots/screenshot.png" alt="Screenshot of the game" width="720"/>
-  <img src="screenshots/screenshot2.png" alt="Screenshot of the game" width="720"/>
+  <img src="screenshots/screenshot.png" alt="Screenshot of the game" width="1120"/>
+  <img src="screenshots/screenshot2.png" alt="Screenshot of the game" width="1120"/>
 </p>
 
 This repository contains my work from an RPG game development course using Unreal Engine 5.5 and C++. The project was built step by step while following the course and serves as both a learning reference and a portfolio project.
