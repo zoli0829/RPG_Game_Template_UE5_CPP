@@ -220,23 +220,45 @@ void APaladinCharacter::StopRunning()
 
 void APaladinCharacter::BasicAttack()
 {
-	AnimMontagePlay(AttackMontage, FName("Attack1"), 1.25f);
+	if (!BasicAttackMontage || AttackSections.Num() == 0) return;
+
+	// Pick the next section
+	FName SectionName = AttackSections[CurrentAttackIndex];
+
+	// Play the montage
+	AnimMontagePlay(BasicAttackMontage, SectionName, 1.25f);
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Cyan, SectionName.ToString());
+
+	// Move to the next index
+	CurrentAttackIndex++;
+
+	// Reset if past the last section
+	if (CurrentAttackIndex >= AttackSections.Num())
+	{
+		CurrentAttackIndex = 0;
+	}
+
+	// Start the combo reset timer
+	GetWorldTimerManager().SetTimer(ComboResetTimer, this, &APaladinCharacter::ResetCombo, ComboResetTime, false);
 }
 
 void APaladinCharacter::HeavyAttack()
 {
-	AnimMontagePlay(AttackMontage, FName("Attack2"), 1.25f);
+	// 0 is HeavyAttack
+	AnimMontagePlay(SpecialAttackMontages, FName(SpecialAttackSections[0]), 1.25f);
 }
 
-void APaladinCharacter::SpinAttack()
+void APaladinCharacter::DropAttack()
 {
-	AnimMontagePlay(AttackMontage, FName("Attack3"), 1.25f);
+	// 1 is DropAttack
+	AnimMontagePlay(SpecialAttackMontages, FName(SpecialAttackSections[1]), 1.25f);
 }
 
 void APaladinCharacter::JumpAttack()
 {
-	MotionWarpAttack(1000, "Attack4");
-	AnimMontagePlay(AttackMontage, FName("Attack4"), 1.25f);
+	MotionWarpAttack(1000, SpecialAttackSections[2]);
+	// 2 is JumpAttack
+	AnimMontagePlay(SpecialAttackMontages, FName(SpecialAttackSections[2]), 1.25f);
 }
 
 void APaladinCharacter::DodgeBack()
@@ -309,7 +331,7 @@ void APaladinCharacter::AnimMontagePlay(UAnimMontage* MontageToPlay, FName Secti
 			PlayAnimMontage(MontageToPlay, PlayRate, SectionName);
 		}
 
-		if (MontageToPlay == AttackMontage && SectionName == "Attack4")
+		if (MontageToPlay == SpecialAttackMontages && SectionName == "Attack4")
 		{
 			FTimerHandle WarpTimer;
 			GetWorldTimerManager().SetTimer(WarpTimer, this, &APaladinCharacter::ResetWarpAttack, 2.0f, false);
@@ -338,6 +360,11 @@ void APaladinCharacter::OnRightWeaponOverlap(UPrimitiveComponent* OverlappedComp
 		UDamageType::StaticClass()
 		);
 	}
+}
+
+void APaladinCharacter::ResetCombo()
+{
+	CurrentAttackIndex = 0;
 }
 
 bool APaladinCharacter::PlayerFacingActor(AActor* FacingActor)
@@ -395,7 +422,7 @@ void APaladinCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 		// Attack actions
 		Input->BindAction(BasicAttackAction, ETriggerEvent::Completed, this, &APaladinCharacter::BasicAttack);
 		Input->BindAction(HeavyAttackAction, ETriggerEvent::Completed, this, &APaladinCharacter::HeavyAttack); // or Triggered, whichever feels better
-		Input->BindAction(SpinAttackAction, ETriggerEvent::Completed, this, &APaladinCharacter::SpinAttack);
+		Input->BindAction(SpinAttackAction, ETriggerEvent::Completed, this, &APaladinCharacter::DropAttack);
 		Input->BindAction(JumpAttackAction, ETriggerEvent::Completed, this, &APaladinCharacter::JumpAttack);
 
 		// Dodge actions

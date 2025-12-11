@@ -117,6 +117,15 @@ protected:
 	UPROPERTY(EditAnywhere, Category="EnhancedInput")
 	UInputAction* DodgeForwardAction;
 
+	// Attack montage section names
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combat")
+	TArray<FName> AttackSections = { "BasicAttack1", "BasicAttack2", "BasicAttack3", "BasicAttack4" };
+	
+	int32 CurrentAttackIndex = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combat")
+	TArray<FName> SpecialAttackSections = { "HeavyAttack", "DropAttack", "JumpAttack" };
+
 	// Walk speed
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Movement")
 	float WalkSpeed;
@@ -135,7 +144,7 @@ protected:
 	// Attacks
 	void BasicAttack();
 	void HeavyAttack();
-	void SpinAttack();
+	void DropAttack();
 	void JumpAttack();
 
 	// Dodge Roll
@@ -168,6 +177,9 @@ protected:
 private:
 	// Timers
 	FTimerHandle TimerDodgeRoll;
+	FTimerHandle ComboResetTimer;
+	float ComboResetTime = 2.0f;
+	void ResetCombo();
 
 	// Last checkpoint location
 	FVector CheckpointLocation;
@@ -182,7 +194,10 @@ private:
 
 	// Montages
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Montages", meta=(AllowPrivateAccess="true"))
-	UAnimMontage* AttackMontage;
+	UAnimMontage* SpecialAttackMontages;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Montages", meta=(AllowPrivateAccess="true"))
+	UAnimMontage* BasicAttackMontage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Montages", meta=(AllowPrivateAccess="true"))
 	UAnimMontage* DodgeMontage;
